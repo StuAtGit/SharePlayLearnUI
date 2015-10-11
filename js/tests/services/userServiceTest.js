@@ -30,6 +30,9 @@ describe( "User Service Tests", function() {
     });
 
     it( "Sets the user info", function() {
+        //TODO: debug error that happens because userPromise is not defined
+        //TODO: it is initialized in getUser() - do we really want to force that to be always called first?
+        //TODO: look over code to verify
         userService.setUserInfo( accessToken, userId, email, userName, tokenExpiration );
         httpBackend.flush();
     })
