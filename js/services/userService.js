@@ -1,4 +1,4 @@
-var userService = angular.module("userService",["ng","userItemModule"]);
+var userService = angular.module("userModule",["ng","itemModule"]);
 
 /*
  this is what the server-side object that is serialized into JSON looks like,

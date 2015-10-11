@@ -5,7 +5,7 @@
  * compose this object into the user service & begin loading the filelist after login.
  */
 
-var itemModule = angular.module( "userItemModule", ["ng"]);
+var itemModule = angular.module( "itemModule", ["ng"]);
 
 var $itemService = itemModule.service( "$itemService", ["$http", "$q", function( $http, $q ) {
 
@@ -45,7 +45,7 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
 
     //TODO: user service calls this, and populates item data
     //TODO: for each item in the itemlist, and share controller
-    //TODO: then invokes this. Write until/functional tests for services that
+    //TODO: then invokes this. Write unit/functional tests for services that
     //TODO: validate they do the right thing. And separate out ui into a separate project
     //TODO: UI now uses DATA URI's, and the service supplies the data from authenticated calls
     this.getItem = function( accessToken, itemLocation ) {
