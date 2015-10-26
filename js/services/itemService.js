@@ -50,7 +50,13 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
     //TODO: UI now uses DATA URI's, and the service supplies the data from authenticated calls
     this.getItem = function( accessToken, itemLocation ) {
         var itemDataDeferred = $q.defer();
-        $http.get("api/file" + itemLocation );
+        $http.get("api/file" + itemLocation).then(
+            function( response ) {
+                itemDataDeferred.resolve( itemLocation, response.data );
+            }, function( response ) {
+                itemDataDeferred.reject( response.status + "/" + response.statusText + " " + response.data );
+            }
+        );
         return itemDataDeferred.promise;
     }
 

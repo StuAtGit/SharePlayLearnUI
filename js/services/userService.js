@@ -1,29 +1,5 @@
 var userService = angular.module("userModule",["ng","itemModule"]);
 
-/*
- this is what the server-side object that is serialized into JSON looks like,
- which comes from google, and is specified in the google developer openid connect docs
- public static class OauthJwt {
- public String iss;
- public String sub;
- public String azp;
- public String email;
- public String at_hash;
- public String email_verified;
- public String aud;
- public String iat;
- public String exp;
- }
-
- public static class LoginInfo {
- public String accessToken;
- public String expiry;
- public String idToken;
- public OauthJwt idTokenBody;
- public String id;
- }
- */
-
 userService.service("$user",["$http", "$q", "$itemService", function($http, $q, $itemService) {
     /**
      *
@@ -35,6 +11,10 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         return atob(str.replace(/\-/g, '+').replace(/_/g, '/'));
     };
 
+    this.setPreview = function( previewLocation, previewData ) {
+        this.userInfo.previewCache[previewLocation] = previewData;
+    };
+
     this.handleItemListResolve = function( itemList ) {
         this.userInfo.itemList = itemList;
         this.userInfoPromise.resolve(this.userInfo);
@@ -43,9 +23,14 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
                 continue;
             }
 
-            $itemService.getItem(
-                this.userInfo.access_token,
-                this.userInfo.itemList[itemIndex].previewLocation )
+            if( typeof this.userInfo.itemList[itemIndex].previewLocation !== "undefined" ) {
+                $itemService.getItem(
+                    this.userInfo.access_token,
+                    this.userInfo.itemList[itemIndex].previewLocation
+                ).then(
+                    this.setPreview.bind(this)
+                )
+            }
         }
     };
 
@@ -55,6 +40,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
     };
 
     this.initializeItemList = function( userEmail, userId, accessToken ) {
+        this.userInfo.itemList = [];
         $itemService.getItemList( userEmail, userId, accessToken).then(
             this.handleItemListResolve.bind(this),
             this.handleItemListReject.bind(this)
@@ -70,6 +56,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         this.userInfo.user_name = userName;
         this.userInfo.token_expiration = tokenExpiration;
         this.userInfoPromise.resolve(this.userInfo);
+        this.userInfo.previewCache = {};
         this.initializeItemList(
             this.userInfo.user_email,
             this.userInfo.user_id,
@@ -192,8 +179,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
                 return undefined;
             }
             this.userInfo.user_id = window.sessionStorage.getItem("user_id");
-            //for now, don't clear this, so we can try to auto-fill later
-            //$scope.user_info.user_email = window.sessionStorage.getItem("user_email");
+            this.userInfo.user_email = window.sessionStorage.getItem("user_email");
             this.userInfo.user_name = window.sessionStorage.getItem("user_name");
 
             //check to make sure the session storage had valid values
@@ -202,8 +188,8 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
                 this.userInfo.user_name != undefined &&
                 this.userInfo.user_name != null ) {
 
-                if( typeof this.userInfo.itemListDeferred === "undefined" ) {
-                    this.initializeItemList(this.userInfo.user_id, this.userInfo.access_token);
+                if( typeof this.userInfo.itemList === "undefined" ) {
+                    this.initializeItemList(this.userInfo.user_email, this.userInfo.user_id);
                 }
                 return this.userInfoPromise.promise;
             } else {
