@@ -76,6 +76,8 @@ describe( "User Service Tests", function() {
      * As (I think) it can still be outstanding when this finishes.
      * TODO: tests for item list & preview cache & working templates of data urls
      * TODO: but first - start on deployment for split UI/API setup
+     * TODO: #1 get new deployment strategy working locally
+     * TODO: (coz intellij can't hit/get tomcat api - because it's all relative paths)
      */
     it( "Sets the user info", function(done) {
         var credentials = {};

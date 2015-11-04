@@ -11,7 +11,7 @@
             <a href="/api/file/{{item.itemLocation}}">
                 <img
                      ng-if="item.hasPreview && item.type==='image'"
-                     src="data:image/jpeg;base64,{{item.previewData}}"
+                     src="data:image/jpeg;base64,{{user_info.previewCache[item.itemLocation]}}"
                      alt="{{item.attr.altText}}"
                 >
             </a>
