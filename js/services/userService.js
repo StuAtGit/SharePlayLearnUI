@@ -69,7 +69,8 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         sessionStorage.setItem("user_name",this.userInfo.user_name);
     };
 
-    this.handleLoginResponse = function( data, status, headers, config ) {
+    this.handleLoginResponse = function( response ) {
+        var data = response.data;
         var accessToken = data.accessToken;
         var userId = data.idTokenBody.sub;
         var email = data.idTokenBody.email;
@@ -81,8 +82,8 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         console.log("Logged in user: " + JSON.stringify(this.userInfo));
     };
 
-    this.handleLoginReject = function( data, status, headers, config ) {
-        var message = "User login failed due to network issue: " + status + " " + data;
+    this.handleLoginReject = function( response ) {
+        var message = "User login failed due to network issue: " + JSON.stringify(response);
         this.userInfoPromise.reject( message );
         console.log(message);
     };
@@ -96,16 +97,16 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
      */
     this.loginUser = function(credentials) {
         this.userInfoPromise = $q.defer();
-
-        $http.post(apiLocation + "api/access_token", null,
+        var tokenLocation = apiLocation + "api/access_token";
+        console.log("Posting to: " + tokenLocation);
+        $http.post(tokenLocation, null,
             {
                 headers: {
                     'Authorization': btoa(credentials.username + ":" + credentials.password)
                 }
             }
-        ).success(
-            this.handleLoginResponse.bind(this)
-        ).error(
+        ).then(
+            this.handleLoginResponse.bind(this),
             this.handleLoginReject.bind(this)
         );
 
