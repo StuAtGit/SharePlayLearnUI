@@ -57,8 +57,8 @@ describe( "User Service Tests", function() {
 
             var email = authResponseObj.idTokenBody.email;
             var userId = authResponseObj.idTokenBody.sub;
-            httpBackend.expectPOST("api/access_token").respond( JSON.stringify(authResponseObj) );
-            var filelistUrl = "api/file/" + email + "/" + userId + "/filelist";
+            httpBackend.expectPOST(apiLocation + "api/access_token").respond( JSON.stringify(authResponseObj) );
+            var filelistUrl = apiLocation + "api/file/" + email + "/" + userId + "/filelist";
             var fileUrl = /api\/file\/.+\/.+\/preview_image\/.+/;
             httpBackend.expectGET( filelistUrl ).respond( JSON.stringify(filelistResponseObject) );
             httpBackend.expectGET( fileUrl,  {"Accept":"application/json, text/plain, */*"} ).respond( "" );
@@ -83,20 +83,22 @@ describe( "User Service Tests", function() {
         var credentials = {};
         credentials.username = email;
         credentials.password = "password";
+        //technically, we should wait on the loginUser promise
+        //but the code should be robust enough to survive not doing that
         userService.loginUser(credentials);
         var userInfoPromise = userService.getCurrentUser();
-        if(  typeof userInfoPromise === "undefined" ) {
-            console.log("User info undefined?");
-            done();
-        } else {
-            userInfoPromise.then(
-                userInfoSuccessCallback(done),
-                function error( error ) {
-                    console.log(error);
-                    done();
-                }
-            );
-        }
+            if(  typeof userInfoPromise === "undefined" ) {
+                console.log("User info undefined?");
+                done();
+            } else {
+                userInfoPromise.then(
+                    userInfoSuccessCallback(done),
+                    function error( error ) {
+                        console.log(error);
+                        done();
+                    }
+                );
+            }
         httpBackend.flush();
     })
 });

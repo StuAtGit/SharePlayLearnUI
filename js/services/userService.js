@@ -77,10 +77,14 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         var expiration = data.expiry;
 
         this.setUserInfo(accessToken, userId, email, userName, expiration);
+        this.userInfoPromise.resolve(this.userInfo);
+        console.log("Logged in user: " + JSON.stringify(this.userInfo));
     };
 
     this.handleLoginReject = function( data, status, headers, config ) {
-        this.userInfoPromise.reject( "User login failed due to network issue: " + status + " " + data );
+        var message = "User login failed due to network issue: " + status + " " + data;
+        this.userInfoPromise.reject( message );
+        console.log(message);
     };
 
     //while tempting to return cached user, what if we want to login a new user?
@@ -93,7 +97,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
     this.loginUser = function(credentials) {
         this.userInfoPromise = $q.defer();
 
-        $http.post("api/access_token", null,
+        $http.post(apiLocation + "api/access_token", null,
             {
                 headers: {
                     'Authorization': btoa(credentials.username + ":" + credentials.password)
@@ -169,7 +173,15 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
     this.getCurrentUser = function() {
         //TODO: Validate token, otherwise user will just get a random popup that tells them
         //that they should logout and login again
+
+        /** If the user info isn't already populated, check
+         * to see if they're already logging in, and, if not,
+         * check session storage for the information, and if not there,
+         * they're not logged in anymore. **/
         if( typeof this.userInfo === "undefined" ) {
+            if( typeof this.userInfoPromise !== "undefined" ) {
+                return this.userInfoPromise.promise;
+            }
             this.userInfo = {};
             this.userInfoPromise = $q.defer();
             this.userInfo.access_token = window.sessionStorage.getItem("access_token");
