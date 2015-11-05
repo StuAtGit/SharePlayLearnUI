@@ -1,1 +1,1 @@
-var apiLocation = "http://localhost:8080"
+var apiLocation = "http://localhost:8080";
