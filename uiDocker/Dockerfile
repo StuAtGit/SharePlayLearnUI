@@ -5,6 +5,10 @@
 #run like so:
 #$> docker run -p 8081:80 -i -t ui-docker /bin/bash
 #docker_shell> service nginx start
+#Then, the ui can be accessed at:
+#http://127.0.0.1:8081/
+#note that "localhost" will not work (it must be 127.0.0.1), unless you update the nginx local-ui.conf
+#nginx is picky about the server name like that...
 
 FROM ubuntu:wily
 
@@ -23,7 +27,7 @@ RUN apt-get install -y links
 
 ADD uiDocker/local-ui.conf /etc/nginx/sites-enabled/local-ui.conf
 ADD index.html /var/www/shareplaylearnUI/index.html
-ADD templates /var/www/shareplaylearnUI/
-ADD js /var/www/shareplaylearnUI/
-ADD css /var/www/shareplaylearnUI/
-ADD bower_components /var/www/shareplaylearnUI/
+ADD templates /var/www/shareplaylearnUI/templates/
+ADD js /var/www/shareplaylearnUI/js/
+ADD css /var/www/shareplaylearnUI/css/
+ADD bower_components /var/www/shareplaylearnUI/bower_components/
