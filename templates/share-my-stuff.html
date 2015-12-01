@@ -5,7 +5,7 @@
         <br/>
         <div ng-repeat="item in user_info.itemList" class="itemlist">
             <!-- TODO: Intercept click to add authorization header, if logged in -->
-            <a href="{{user_info.apiLocation}}api/file/{{item.itemLocation}}">
+            <a href="api/file{{item.itemLocation}}">
                 <!-- TODO: this is present, but isn't rendering - doesn't even look like base64 ? (and click is 404?)-->
                 <img
                      src="data:image/jpeg;base64,{{user_info.previewCache[item.previewLocation]}}"
@@ -31,7 +31,7 @@
     <hr width="100%" size="0.3em"/>
     Upload new stuff:
     <!-- Upload File Form - needs much improvement -->
-    <form action="/api/file/form" method="post" enctype="multipart/form-data"
+    <form action="api/file/form" method="post" enctype="multipart/form-data"
           ng-submit="submitUpload(file_upload,user_info)" novalidate>
         <!--<label for="upload_filename">Save file as:</label>-->
         <!--<input id="upload_filename" type="text" name="filename"
@@ -43,12 +43,15 @@
         <input type="submit" value="Upload" id="file_submit" class="submit-button"/> <br/>
         <input type="hidden" name="user_id" value="{{user_info.user_id}}"
                ng-model="user_info.user_id"/>
+        <!-- TODO: figure out email/name mismatch between UI and API -->
+        <input type="hidden" name="user_name" value="{{user_info.user_email}}"
+               ng-model="user_info.user_email"/>
         <input type="hidden" name="access_token" value="{{user_info.access_token}}"
                ng-model="user_info.user_id"/>
     </form>
     <div id="file-uploaded" style="display:none;">File Uploaded :)</div>
 
 </div>
-<div class="app-content" ng-show="!user_info || !user_info.user_name">
-    Please login in to share
-</div>
+<!--<div class="app-content" ng-show="!user_info || !user_info.user_name">-->
+    <!--Please login in to share-->
+<!--</div>-->
