@@ -24,6 +24,7 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
         }
 
         $scope.submitLogin = function(credentials) {
+            console.log("Submitting login with: " + JSON.stringify(credentials));
             var loginPromise = $user.loginUser(credentials);
             loginPromise.then(
                 function( userInfo ) {
@@ -31,7 +32,7 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
                     setCurrentUser($scope.user_info.user_name, document);
                     $user.getCurrentUser().then(
                         function success( data ) {
-                            $scope.user_info.itemList = data.itemList;
+                            $scope.user_info = data;
                         },
                         function error( msg ) {
                             logout($scope,document);

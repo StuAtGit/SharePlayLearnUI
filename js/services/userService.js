@@ -11,19 +11,19 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         return atob(str.replace(/\-/g, '+').replace(/_/g, '/'));
     };
 
-    this.setPreview = function( previewLocation, previewData ) {
-        this.userInfo.previewCache[previewLocation] = previewData;
+    this.setPreview = function( data ) {
+        this.userInfo.previewCache[data.itemLocation] = data.response.data;
     };
 
     this.handleItemListResolve = function( itemList ) {
         this.userInfo.itemList = itemList;
-        this.userInfoPromise.resolve(this.userInfo);
         for( var itemIndex in this.userInfo.itemList ) {
             if( !this.userInfo.itemList.hasOwnProperty(itemIndex) ) {
                 continue;
             }
-
-            if( typeof this.userInfo.itemList[itemIndex].previewLocation !== "undefined" ) {
+            var item = this.userInfo.itemList[itemIndex];
+            if( typeof item.previewLocation !== "undefined" ) {
+                this.userInfo.previewCache[item.previewLocation] = "loading";
                 $itemService.getItem(
                     this.userInfo.access_token,
                     this.userInfo.itemList[itemIndex].previewLocation
@@ -32,6 +32,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
                 )
             }
         }
+        this.userInfoPromise.resolve(this.userInfo);
     };
 
     this.handleItemListReject = function( msg ) {
@@ -49,13 +50,15 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
 
     this.setUserInfo = function( accessToken, userId, email, userName, tokenExpiration )
     {
-        this.userInfo = {};
+        if( typeof this.userInfo === "undefined") {
+            this.userInfo = {};
+        }
         this.userInfo.access_token = accessToken;
         this.userInfo.user_id = userId;
         this.userInfo.user_email = email;
         this.userInfo.user_name = userName;
         this.userInfo.token_expiration = tokenExpiration;
-        this.userInfoPromise.resolve(this.userInfo);
+        this.userInfo.apiServer = apiLocation;
         this.userInfo.previewCache = {};
         this.initializeItemList(
             this.userInfo.user_email,
@@ -78,7 +81,6 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         var expiration = data.expiry;
 
         this.setUserInfo(accessToken, userId, email, userName, expiration);
-        this.userInfoPromise.resolve(this.userInfo);
         console.log("Logged in user: " + JSON.stringify(this.userInfo));
     };
 
@@ -187,6 +189,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
             this.userInfoPromise = $q.defer();
             this.userInfo.access_token = window.sessionStorage.getItem("access_token");
             this.userInfo.token_expiration = window.sessionStorage.getItem("expires_in");
+            this.userInfo.apiLocation = apiLocation;
             if( !this.isValidToken() ) {
                 this.logout();
                 return undefined;
@@ -196,21 +199,21 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
             this.userInfo.user_name = window.sessionStorage.getItem("user_name");
 
             //check to make sure the session storage had valid values
-            if( this.userInfo.access_token != undefined &&
+            if( typeof this.userInfo.access_token !== "undefined" &&
                 this.userInfo.access_token != null &&
-                this.userInfo.user_name != undefined &&
+                typeof this.userInfo.user_name !== "undefined" &&
                 this.userInfo.user_name != null ) {
 
-                if( typeof this.userInfo.itemList === "undefined" ) {
-                    this.initializeItemList(this.userInfo.user_email, this.userInfo.user_id);
-                }
+                this.setUserInfo(this.userInfo.access_token, this.userInfo.user_id,
+                    this.userInfo.user_email, this.userInfo.user_name, this.userInfo.token_expiration);
                 return this.userInfoPromise.promise;
             } else {
                 this.logout();
                 return undefined;
             }
         } else {
-            this.userInfoPromise.resolve(this.userInfo);
+            this.setUserInfo(this.userInfo.access_token, this.userInfo.user_id,
+                this.userInfo.user_email, this.userInfo.user_name, this.userInfo.token_expiration);
             return this.userInfoPromise.promise;
         }
     };

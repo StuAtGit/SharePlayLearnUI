@@ -43,16 +43,25 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
         return this.itemListDeferred.promise;
     };
 
-    //TODO: user service calls this, and populates item data
-    //TODO: for each item in the itemlist, and share controller
-    //TODO: then invokes this. Write unit/functional tests for services that
-    //TODO: validate they do the right thing. And separate out ui into a separate project
-    //TODO: UI now uses DATA URI's, and the service supplies the data from authenticated calls
+    //User service calls this, and populates item data
+    //for each item in the itemlist, and share controller
+    //then invokes this.
+    //UI now uses DATA URI's, and the service supplies the data from authenticated calls
+    //TODO:
+    //TODO: clean out UI from API, update tomcat web.xml with CORS options on Digital Ocean,
+    //TODO: and get a move on this!
+    //TODO: Write unit/functional tests for services that
+    //TODO: validate they do the right thing (once we're sure we know what that is..
     this.getItem = function( accessToken, itemLocation ) {
         var itemDataDeferred = $q.defer();
-        $http.get(apiLocation + "api/file" + itemLocation).then(
+        $http.get(apiLocation + "api/file" + itemLocation, {
+            headers : {'Authorization' : 'Bearer ' + accessToken}
+        }).then(
             function( response ) {
-                itemDataDeferred.resolve( itemLocation, response.data );
+                var data = {};
+                data.itemLocation = itemLocation;
+                data.response = response;
+                itemDataDeferred.resolve( data );
             }, function( response ) {
                 itemDataDeferred.reject( response.status + "/" + response.statusText + " " + response.data );
             }

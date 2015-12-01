@@ -7,8 +7,10 @@
 #docker_shell> service nginx start
 #Then, the ui can be accessed at:
 #http://127.0.0.1:8081/
-#note that "localhost" will not work (it must be 127.0.0.1), unless you update the nginx local-ui.conf
+#NOTE: "localhost" will not work (it must be 127.0.0.1), unless you update the nginx local-ui.conf
 #nginx is picky about the server name like that...
+#NOTE: general docker tip - stopping a container does not clean up resources,
+#for that, use something like: docker rm `docker ps -a -q`
 
 FROM ubuntu:wily
 
