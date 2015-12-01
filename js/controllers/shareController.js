@@ -4,21 +4,45 @@ shareAppControllers.controller("ShareIntroCtrl", ['$scope', '$http',
     }
 ]);
 
-shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routeParams',
-    '$location', '$anchorScroll', '$user',
-    function( $scope, $http, $routeParams, $location, $anchorScroll, $user ) {
+shareAppControllers.factory("$imageModal", function(btfModal) {
+   return btfModal({
+       controller: "ImageModalCtrl",
+       controllerAs: "modal",
+       templateUrl: "templates/image-modal.html"
+   });
+});
 
-        $scope.toggleOpacity = function( itemId, opacity ) {
-            if( document.getElementById(itemId).style.opacity > 0 ) {
-                document.getElementById(itemId).style.opacity = 0;
-                document.getElementById(itemId).style.pointerEvents = "none";
-            } else {
-                document.getElementById(itemId).style.opacity = 1;
-                document.getElementById(itemId).style.pointerEvents = "auto";
-            }
-            /*if( opacity > 0 ) {
-             alert( "toggling opacity, argument was: " + opacity);
-             }*/
+shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user",
+    function($scope, $imageModal, $user) {
+        if( $user.getCurrentUser() !== undefined ) {
+            $scope.loggingIn = true;
+            $user.getCurrentUser().then(
+                function success( data ) {
+                    $scope.user_info = data;
+                    setCurrentUser($scope.user_info.user_name, document);
+                    $scope.loggingIn = false;
+                },
+                function error( msg ) {
+                    $scope.loggingIn = false;
+                    $user.logout();
+                    logout($scope,document);
+                }
+            );
+        }
+        $scope.modalImage = {};
+        $scope.modalImage.imageData = "Hello!";
+        $scope.modalImage.altText = "Nice Pic :)";
+        this.closeModal = $imageModal.deactivate;
+}]);
+
+shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routeParams',
+    '$location', '$anchorScroll', '$user','$imageModal',
+    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal ) {
+
+        $scope.openImageModal = function( item ) {
+            //TODO: set current Image item in user service, so modal service can retrieve and display
+            //TODO: the correct image data above
+            $imageModal.activate();
         };
 
         $scope.gotoAnchorHash = function(anchorHash) {
@@ -41,17 +65,21 @@ shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routePar
         }
 
         if( $user.getCurrentUser() !== undefined ) {
+            $scope.loggingIn = true;
             $user.getCurrentUser().then(
                 function success( data ) {
                     $scope.user_info = data;
                     setCurrentUser($scope.user_info.user_name, document);
+                    $scope.loggingIn = false;
                 },
                 function error( msg ) {
+                    $scope.loggingIn = false;
                     $user.logout();
                     logout($scope,document);
                 }
             );
         } else {
+            $scope.loggingIn = false;
             logout($scope,document);
         }
     }

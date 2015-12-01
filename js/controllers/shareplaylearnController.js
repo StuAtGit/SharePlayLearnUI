@@ -1,4 +1,5 @@
-var shareAppControllers = angular.module('shareAppControllers',["userModule"]).config(function($sceProvider) {
+var shareAppControllers = angular.module('shareAppControllers',["userModule","btford.modal"])
+    .config(function($sceProvider) {
     //completely disable SCE because it sanitizes data that is *not*
     //user-provided, and is *not* cross domain.
     //TODO: sort out the necessary whitelists for this - may not be necessary at all in the new model

@@ -5,26 +5,23 @@
         <br/>
         <div ng-repeat="item in user_info.itemList" class="itemlist">
             <!-- TODO: Intercept click to add authorization header, if logged in -->
-            <a href="api/file{{item.itemLocation}}">
+            <a href="" ng-click="openImageModal(item)" ng-if="item.type==='image'">
                 <!-- TODO: this is present, but isn't rendering - doesn't even look like base64 ? (and click is 404?)-->
                 <img
                      src="data:image/jpeg;base64,{{user_info.previewCache[item.previewLocation]}}"
-                     ng-if="item.previewLocation && item.type==='image'"
+                     ng-if="item.previewLocation"
                      alt="{{item.attr.altText}}"
                 >
                 <div ng-if="!item.previewLocation">
                     <!-- TODO: add item.name to API -->
-                    No Preview Available
+                    No Image Preview Available
                 </div>
             </a>
-            <!-- FileListItem will usually just have #openModal,
-             and then have <div id="openModal" class=modalXXXPopup> </div>
-             <a href="/#/share#{{item.onClick}}" ng-click="gotoAnchorHash(item.onClick)" ng-if="item.hasOnClick">
-             as display html-->
-            <!-- TODO: move display html snippets from backend to frontend -->
-            <a href="" ng-click="toggleOpacity(item.onClick,1)" ng-if="item.hasOnClick">
-                <div ng-bind-html="item.displayHtml"></div>
-            </a>
+            <div ng-if="item.type!=='image'">
+                <!-- TODO: add item.name to API, implement a way to download unknown types (href with auth)
+                     TODO: and use that download original from modal! -->
+                No Preview Available
+            </div>
         </div>
     </ol>
     <br/>
@@ -52,6 +49,6 @@
     <div id="file-uploaded" style="display:none;">File Uploaded :)</div>
 
 </div>
-<!--<div class="app-content" ng-show="!user_info || !user_info.user_name">-->
-    <!--Please login in to share-->
-<!--</div>-->
+<div class="app-content" ng-show="(!user_info || !user_info.user_name) && !loggingIn">
+    Please login in to share
+</div>

@@ -41,11 +41,14 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
     };
 
     this.initializeItemList = function( userEmail, userId, accessToken ) {
-        this.userInfo.itemList = [];
-        $itemService.getItemList( userEmail, userId, accessToken).then(
-            this.handleItemListResolve.bind(this),
-            this.handleItemListReject.bind(this)
-        );
+        if( typeof this.userInfo.itemList === "undefined" ) {
+            this.userInfo.itemList = [];
+            this.userInfo.previewCache = {};
+            $itemService.getItemList(userEmail, userId, accessToken).then(
+                this.handleItemListResolve.bind(this),
+                this.handleItemListReject.bind(this)
+            );
+        }
     };
 
     this.setUserInfo = function( accessToken, userId, email, userName, tokenExpiration )
@@ -59,7 +62,6 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         this.userInfo.user_name = userName;
         this.userInfo.token_expiration = tokenExpiration;
         this.userInfo.apiServer = apiLocation;
-        this.userInfo.previewCache = {};
         this.initializeItemList(
             this.userInfo.user_email,
             this.userInfo.user_id,
@@ -158,11 +160,13 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
     };
 
     this.logout = function() {
-        this.userInfo.access_token = undefined;
-        this.userInfo.user_id = undefined;
-        this.userInfo.itemList = undefined;
-        this.userInfo.user_name = undefined;
-        this.userInfo = undefined;
+        if( typeof this.userInfo !== "undefined" ) {
+            this.userInfo.access_token = undefined;
+            this.userInfo.user_id = undefined;
+            this.userInfo.itemList = undefined;
+            this.userInfo.user_name = undefined;
+            this.userInfo = undefined;
+        }
         window.sessionStorage.removeItem('user_id');
         window.sessionStorage.removeItem('access_token');
         window.sessionStorage.removeItem('user_email');
