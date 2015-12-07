@@ -12,26 +12,37 @@ shareAppControllers.factory("$imageModal", function(btfModal) {
    });
 });
 
-shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user",
-    function($scope, $imageModal, $user) {
-        if( $user.getCurrentUser() !== undefined ) {
-            $scope.loggingIn = true;
+shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user","$itemService",
+    function($scope, $imageModal, $user, $itemService) {
+
+        /**
+         * we don't want this happening until the appropriate item is set in the user service
+         */
+        $scope.modalImage = {};
+        if ($user.getCurrentUser() !== undefined) {
             $user.getCurrentUser().then(
-                function success( data ) {
+                function success(data) {
                     $scope.user_info = data;
                     setCurrentUser($scope.user_info.user_name, document);
-                    $scope.loggingIn = false;
+                    var modalItem = $user.getModalItem();
+                    $scope.modalImage.altText = "Loading..";
+                    $itemService.getItem($scope.user_info.access_token, modalItem.itemLocation).then(
+                        function (itemResponse) {
+                            $scope.modalImage.imageData = itemResponse.response.data;
+                            $scope.modalImage.altText = modalItem.attr.altText;
+                        },
+                        function (errMsg) {
+                            $scope.modalImage.altText = "Failed to load image, " + modalItem.attr.altText + ", " + errMsg;
+                        }
+                    );
                 },
-                function error( msg ) {
-                    $scope.loggingIn = false;
+                function error(msg) {
                     $user.logout();
-                    logout($scope,document);
+                    logout($scope, document);
                 }
             );
         }
-        $scope.modalImage = {};
-        $scope.modalImage.imageData = "Hello!";
-        $scope.modalImage.altText = "Nice Pic :)";
+
         this.closeModal = $imageModal.deactivate;
 }]);
 
@@ -42,6 +53,7 @@ shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routePar
         $scope.openImageModal = function( item ) {
             //TODO: set current Image item in user service, so modal service can retrieve and display
             //TODO: the correct image data above
+            $user.setModalItem(item);
             $imageModal.activate();
         };
 

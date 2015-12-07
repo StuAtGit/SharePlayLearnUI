@@ -43,25 +43,29 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
         return this.itemListDeferred.promise;
     };
 
-    //User service calls this, and populates item data
-    //for each item in the itemlist, and share controller
-    //then invokes this.
-    //UI now uses DATA URI's, and the service supplies the data from authenticated calls
-    //TODO:
-    //TODO: clean out UI from API, update tomcat web.xml with CORS options on Digital Ocean,
-    //TODO: and get a move on this!
+    //TODO: finish off modal dialog, update tomcat web.xml with CORS options on Digital Ocean,
+    //TODO: and deploy to nginx and tomcat. Might be time for salt :O.
     //TODO: Write unit/functional tests for services that
     //TODO: validate they do the right thing (once we're sure we know what that is..
+
+    /**
+     * Returns a JSON object that contains the itemLocation (echoed back),
+     * and the entire response from the server. To get the data back out, use:
+     * var itemData = itemResponse.response.data
+     * @param accessToken
+     * @param itemLocation
+     * @returns {Function}
+     */
     this.getItem = function( accessToken, itemLocation ) {
         var itemDataDeferred = $q.defer();
         $http.get(apiLocation + "api/file" + itemLocation, {
             headers : {'Authorization' : 'Bearer ' + accessToken}
         }).then(
             function( response ) {
-                var data = {};
-                data.itemLocation = itemLocation;
-                data.response = response;
-                itemDataDeferred.resolve( data );
+                var itemResponse = {};
+                itemResponse.itemLocation = itemLocation;
+                itemResponse.response = response;
+                itemDataDeferred.resolve( itemResponse );
             }, function( response ) {
                 itemDataDeferred.reject( response.status + "/" + response.statusText + " " + response.data );
             }

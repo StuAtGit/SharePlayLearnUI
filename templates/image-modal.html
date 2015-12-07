@@ -1,5 +1,18 @@
-<div class="btf-modal">
-    <img src="data:image/jpeg;base64,{{modalImage.imageData}}" alt="{{modalImage.altText}}}">
+<div style="z-index:9999;position:fixed;background:rgba( 0, 0, 0, 0.8 );width:100%;height:100%">
+    <div width="100%">
+        <a href="" ng-click="modal.closeModal()"
+           style="text-align:center;text-decoration: none;
+           color:#ffffff; margin-left:6em;top:3.5em;position:relative">Close Image</a>
+    </div>
+    <div>
+        <img style="margin-top:4em;margin-left:5em"
+             ng-if="modalImage.imageData"
+             src="data:image/jpeg;base64,{{modalImage.imageData}}"
+             alt="{{modalImage.altText}}">
+        <div style="color:#ffffff; margin-left:6em;margin-top:4.5em"
+             ng-if="!modalImage.imageData">
+            Loading Image...
+        </div>
+    </div>
     <!-- modal is determined by the ControllerAs configuration -->
-    <a href="" ng-click="modal.closeModal()">Close</a>
 </div>

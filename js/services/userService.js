@@ -1,12 +1,65 @@
 var userService = angular.module("userModule",["ng","itemModule"]);
 
+/**
+ * This class handles two main aspects of a user:
+ *   - logging in and authentication
+ *   - retrieval of the users items
+ */
 userService.service("$user",["$http", "$q", "$itemService", function($http, $q, $itemService) {
+
     /**
+     * This will likely be the most frequently used method of this class.
+     * It handles checking if the user is already logged in,
+     * if the login data has been cached in session storage, and
+     * triggers the initialization of user items, if necessary.
      *
-     * @param {type} str
-     * @returns {unresolved}
-     *
-     **/
+     * @returns {*}
+     */
+    this.getCurrentUser = function() {
+        //TODO: Validate token, otherwise user will just get a random popup that tells them
+        //that they should logout and login again
+
+        /** If the user info isn't already populated, check
+         * to see if they're already logging in, and, if not,
+         * check session storage for the information, and if not there,
+         * they're not logged in anymore. **/
+        if( typeof this.userInfo === "undefined" ) {
+            if( typeof this.userInfoPromise !== "undefined" ) {
+                return this.userInfoPromise.promise;
+            }
+            this.userInfo = {};
+            this.userInfoPromise = $q.defer();
+            this.userInfo.access_token = window.sessionStorage.getItem("access_token");
+            this.userInfo.token_expiration = window.sessionStorage.getItem("expires_in");
+            this.userInfo.apiLocation = apiLocation;
+            if( !this.isValidToken() ) {
+                this.logout();
+                return undefined;
+            }
+            this.userInfo.user_id = window.sessionStorage.getItem("user_id");
+            this.userInfo.user_email = window.sessionStorage.getItem("user_email");
+            this.userInfo.user_name = window.sessionStorage.getItem("user_name");
+
+            //check to make sure the session storage had valid values
+            if( typeof this.userInfo.access_token !== "undefined" &&
+                this.userInfo.access_token != null &&
+                typeof this.userInfo.user_name !== "undefined" &&
+                this.userInfo.user_name != null ) {
+
+                this.setUserInfo(this.userInfo.access_token, this.userInfo.user_id,
+                    this.userInfo.user_email, this.userInfo.user_name, this.userInfo.token_expiration);
+                return this.userInfoPromise.promise;
+            } else {
+                this.logout();
+                return undefined;
+            }
+        } else {
+            this.setUserInfo(this.userInfo.access_token, this.userInfo.user_id,
+                this.userInfo.user_email, this.userInfo.user_name, this.userInfo.token_expiration);
+            return this.userInfoPromise.promise;
+        }
+    };
+
     this.base64urlDecode  = function(str) {
         return atob(str.replace(/\-/g, '+').replace(/_/g, '/'));
     };
@@ -74,22 +127,22 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         sessionStorage.setItem("user_name",this.userInfo.user_name);
     };
 
-    this.handleLoginResponse = function( response ) {
-        var data = response.data;
-        var accessToken = data.accessToken;
-        var userId = data.idTokenBody.sub;
-        var email = data.idTokenBody.email;
-        var userName = data.idTokenBody.email.split('@')[0];
-        var expiration = data.expiry;
-
-        this.setUserInfo(accessToken, userId, email, userName, expiration);
-        console.log("Logged in user: " + JSON.stringify(this.userInfo));
+    /**
+     * This, along with getModalItem, is used to pass an item selected by the user from the share controller
+     * to the modal controller.
+     * @param item
+     */
+    this.setModalItem = function( item ) {
+        this.item = item;
     };
 
-    this.handleLoginReject = function( response ) {
-        var message = "User login failed due to network issue: " + JSON.stringify(response);
-        this.userInfoPromise.reject( message );
-        console.log(message);
+    /**
+     * This, along with setModalItem, is used to pass an item selected by the user from the share controller
+     * to the modal controller.
+     * @param item
+     */
+    this.getModalItem = function() {
+        return this.item;
     };
 
     //while tempting to return cached user, what if we want to login a new user?
@@ -115,6 +168,24 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         );
 
         return this.userInfoPromise.promise;
+    };
+
+    this.handleLoginResponse = function( response ) {
+        var data = response.data;
+        var accessToken = data.accessToken;
+        var userId = data.idTokenBody.sub;
+        var email = data.idTokenBody.email;
+        var userName = data.idTokenBody.email.split('@')[0];
+        var expiration = data.expiry;
+
+        this.setUserInfo(accessToken, userId, email, userName, expiration);
+        console.log("Logged in user: " + JSON.stringify(this.userInfo));
+    };
+
+    this.handleLoginReject = function( response ) {
+        var message = "User login failed due to network issue: " + JSON.stringify(response);
+        this.userInfoPromise.reject( message );
+        console.log(message);
     };
 
     /**
@@ -176,50 +247,4 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
     this.isValidToken = function() {
         return true;
     };
-
-    this.getCurrentUser = function() {
-        //TODO: Validate token, otherwise user will just get a random popup that tells them
-        //that they should logout and login again
-
-        /** If the user info isn't already populated, check
-         * to see if they're already logging in, and, if not,
-         * check session storage for the information, and if not there,
-         * they're not logged in anymore. **/
-        if( typeof this.userInfo === "undefined" ) {
-            if( typeof this.userInfoPromise !== "undefined" ) {
-                return this.userInfoPromise.promise;
-            }
-            this.userInfo = {};
-            this.userInfoPromise = $q.defer();
-            this.userInfo.access_token = window.sessionStorage.getItem("access_token");
-            this.userInfo.token_expiration = window.sessionStorage.getItem("expires_in");
-            this.userInfo.apiLocation = apiLocation;
-            if( !this.isValidToken() ) {
-                this.logout();
-                return undefined;
-            }
-            this.userInfo.user_id = window.sessionStorage.getItem("user_id");
-            this.userInfo.user_email = window.sessionStorage.getItem("user_email");
-            this.userInfo.user_name = window.sessionStorage.getItem("user_name");
-
-            //check to make sure the session storage had valid values
-            if( typeof this.userInfo.access_token !== "undefined" &&
-                this.userInfo.access_token != null &&
-                typeof this.userInfo.user_name !== "undefined" &&
-                this.userInfo.user_name != null ) {
-
-                this.setUserInfo(this.userInfo.access_token, this.userInfo.user_id,
-                    this.userInfo.user_email, this.userInfo.user_name, this.userInfo.token_expiration);
-                return this.userInfoPromise.promise;
-            } else {
-                this.logout();
-                return undefined;
-            }
-        } else {
-            this.setUserInfo(this.userInfo.access_token, this.userInfo.user_id,
-                this.userInfo.user_email, this.userInfo.user_name, this.userInfo.token_expiration);
-            return this.userInfoPromise.promise;
-        }
-    };
-
 }]);
