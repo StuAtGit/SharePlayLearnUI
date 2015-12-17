@@ -56,9 +56,12 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
      * @param itemLocation
      * @returns {Function}
      */
-    this.getItem = function( accessToken, itemLocation ) {
+    this.getItem = function( accessToken, itemLocation, encoding ) {
+        if( typeof encoding === "undefined" ) {
+            encoding = "base64";
+        }
         var itemDataDeferred = $q.defer();
-        $http.get(apiLocation + "api/file" + itemLocation, {
+        $http.get(apiLocation + "api/file" + itemLocation + "?encode=" + encoding, {
             headers : {'Authorization' : 'Bearer ' + accessToken}
         }).then(
             function( response ) {

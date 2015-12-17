@@ -8,7 +8,7 @@
             <a href="" ng-click="openImageModal(item)" ng-if="item.type==='image'">
                 <!-- TODO: this is present, but isn't rendering - doesn't even look like base64 ? (and click is 404?)-->
                 <img
-                     src="data:image/jpeg;base64,{{user_info.previewCache[item.previewLocation]}}"
+                     src="data:image/jpeg;base64,{{user_info.previewCache[item.previewLocation]}}?encode=base64"
                      ng-if="item.previewLocation"
                      alt="{{item.attr.altText}}"
                 >

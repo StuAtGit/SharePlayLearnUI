@@ -26,7 +26,7 @@ shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user
                     setCurrentUser($scope.user_info.user_name, document);
                     var modalItem = $user.getModalItem();
                     $scope.modalImage.altText = "Loading..";
-                    $itemService.getItem($scope.user_info.access_token, modalItem.itemLocation).then(
+                    $itemService.getItem($scope.user_info.access_token, modalItem.itemLocation, "base64").then(
                         function (itemResponse) {
                             $scope.modalImage.imageData = itemResponse.response.data;
                             $scope.modalImage.altText = modalItem.attr.altText;

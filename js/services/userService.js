@@ -77,9 +77,12 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
             var item = this.userInfo.itemList[itemIndex];
             if( typeof item.previewLocation !== "undefined" ) {
                 this.userInfo.previewCache[item.previewLocation] = "loading";
+                //As far as I can see, previews will be loaded via an href,
+                //and hrefs need base64 for authenticated data urls
                 $itemService.getItem(
                     this.userInfo.access_token,
-                    this.userInfo.itemList[itemIndex].previewLocation
+                    this.userInfo.itemList[itemIndex].previewLocation,
+                    "base64"
                 ).then(
                     this.setPreview.bind(this)
                 )
