@@ -1,6 +1,20 @@
 <div class="app-content" ng-hide="!user_info || !user_info.user_name">
 
-    <span ng-bind="user_info.user_name + '\'s stuff'"></span><br/>
+    <span ng-bind="user_info.user_name + '\'s Smart Items'"></span><br/>
+    <ol>
+        <br/>
+        <div id="hubController">
+            <span ng-bind="user_info.user_name + '\'s Smart Item Hub'"></span>
+            <label for="hubUser">Hub User:</label>
+            <input type="text" id="hubUser">
+            <label for="hubPassword">Hub Password:</label>
+            <input type="text" id="hubPassword">
+            <label for="hubCommand">Hub Command:</label>
+            <input type="text" id="hubCommand">
+        </div>
+    </ol>
+
+    <span ng-bind="user_info.user_name + '\'s Saved Files'"></span><br/>
     <ol>
         <br/>
         <div ng-repeat="item in user_info.itemList" class="itemlist">
