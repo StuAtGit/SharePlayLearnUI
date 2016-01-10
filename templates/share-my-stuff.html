@@ -4,13 +4,18 @@
     <ol>
         <br/>
         <div id="hubController">
-            <span ng-bind="user_info.user_name + '\'s Smart Item Hub'"></span>
+            <span ng-bind="user_info.user_name + '\'s Smart Item Hub'"></span><br/>
+
             <label for="hubUser">Hub User:</label>
-            <input type="text" id="hubUser">
+            <input type="text" id="hubUser" ng-model="hub.user"> <br/>
+
             <label for="hubPassword">Hub Password:</label>
-            <input type="text" id="hubPassword">
+            <input type="text" id="hubPassword" ng-model="hub.password"> <br/>
+
             <label for="hubCommand">Hub Command:</label>
-            <input type="text" id="hubCommand">
+            <input type="text" id="hubCommand" ng-model="hub.command"><br/>
+
+            <button id="hubControllerButton" ng-click="sendHubCommand()">Send Command</button>
         </div>
     </ol>
 

@@ -48,7 +48,15 @@ shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user
 
 shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routeParams',
     '$location', '$anchorScroll', '$user','$imageModal',
-    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal ) {
+    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal, webSocket ) {
+
+        $scope.sendHubCommand = function() {
+            console.log("Sending command: " + $scope.hub.command + " to your hub. User: " + $scope.hub.user);
+            //var hubSocket = webSocket("wss://shareplaylearn.com");
+            //TODO: doesn't look like angular-websocket is really the way to go, since we need mqtt over websockets.
+            //TODO: so figure out how to integrate this into our angular app: https://www.eclipse.org/paho/clients/js/
+
+        };
 
         $scope.openImageModal = function( item ) {
             //TODO: set current Image item in user service, so modal service can retrieve and display
