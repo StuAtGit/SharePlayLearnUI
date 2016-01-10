@@ -4,7 +4,7 @@
 - Get share-my-stuff hub controller form talking to mqtt broker via web sockets
     - Start is very basic -> you enter hub username, password, command by hand
     - At least get a drop-down of commands before integration testing.
-    - Then integrate!
+    - move it into service w/ login integration.
 
 ##And then...
 - Decide what to do about api endpoint in conf.js (for tomcat on server, empty is fine)

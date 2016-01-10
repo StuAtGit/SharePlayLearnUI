@@ -52,7 +52,9 @@ shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routePar
 
         $scope.sendHubCommand = function() {
             console.log("Sending command: " + $scope.hub.command + " to your hub. User: " + $scope.hub.user);
-            //TODO: we may want to move the client out into a service?
+            //TODO: we may want to move the client out into a service
+            //TODO: MQTT connect does take a bit, and usually takes two tries.
+            //TODO: But that would mean integrating into our login
             var mqttClient = new Paho.MQTT.Client( "www.shareplaylearn.com", Number(8001), "shareplaylearn_webclient");
 
             var connectOptions = {};
