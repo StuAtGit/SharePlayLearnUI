@@ -52,10 +52,36 @@ shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routePar
 
         $scope.sendHubCommand = function() {
             console.log("Sending command: " + $scope.hub.command + " to your hub. User: " + $scope.hub.user);
-            //var hubSocket = webSocket("wss://shareplaylearn.com");
-            //TODO: doesn't look like angular-websocket is really the way to go, since we need mqtt over websockets.
-            //TODO: so figure out how to integrate this into our angular app: https://www.eclipse.org/paho/clients/js/
+            //TODO: we may want to move the client out into a service?
+            var mqttClient = new Paho.MQTT.Client( "www.shareplaylearn.com", Number(8001), "shareplaylearn_webclient");
 
+            var connectOptions = {};
+            connectOptions.userName = $scope.hub.user;
+            connectOptions.password = $scope.hub.password;
+            connectOptions.cleanSession = true;
+            connectOptions.useSSL = true;
+            connectOptions.timeout = 60;
+            connectOptions.onSuccess = function( resp ) {
+                console.log("Connected to " + $scope.hub.user + "'s hub.");
+                var commandMessage = new Paho.MQTT.Message( $scope.hub.command );
+                commandMessage.destinationName = "lightswitch";
+                commandMessage.qos = 1;
+                mqttClient.send( commandMessage );
+            };
+
+            mqttClient.onConnectionLost = function( response ) {
+                if( response.errorCode !== 0 ) {
+                    console.log("Connection lost with error: " + response.errorMessage );
+                }
+                console.log("Connection to hub lost without error.");
+            };
+
+            mqttClient.onMessageDelivered = function( message ) {
+                console.log("Message was delivered to: " + message.destinationName + ": " + JSON.stringify(message) );
+                mqttClient.disconnect();
+            };
+
+            mqttClient.connect( connectOptions );
         };
 
         $scope.openImageModal = function( item ) {
