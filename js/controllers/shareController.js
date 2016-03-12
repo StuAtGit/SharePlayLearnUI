@@ -30,6 +30,7 @@ shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user
                         function (itemResponse) {
                             $scope.modalImage.imageData = itemResponse.response.data;
                             $scope.modalImage.altText = modalItem.attr.altText;
+                            $scope.modalItem = modalItem;
                         },
                         function (errMsg) {
                             $scope.modalImage.altText = "Failed to load image, " + modalItem.attr.altText + ", " + errMsg;

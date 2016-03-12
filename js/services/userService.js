@@ -90,16 +90,15 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
                 ).then(
                     this.setPreview.bind(this)
                 )
-            } else {
-                this.userInfo.itemCache[item.itemLocation] = "loading";
-                $itemService.getItem(
-                    this.userInfo.access_token,
-                    item.itemLocation,
-                    "base64"
-                ).then(
-                    this.setItemData.bind(this)
-                )
             }
+            this.userInfo.itemCache[item.itemLocation] = "loading";
+            $itemService.getItem(
+                this.userInfo.access_token,
+                item.itemLocation,
+                "base64"
+            ).then(
+                this.setItemData.bind(this)
+            )
         }
         this.userInfoPromise.resolve(this.userInfo);
     };
