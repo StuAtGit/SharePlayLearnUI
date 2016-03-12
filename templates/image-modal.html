@@ -1,12 +1,12 @@
-<div style="z-index:9999;position:absolute;background:rgba( 0, 0, 0, 0.8 );width:100%;height:100%">
+<!-- position:fixed, so it loads in the users view, but overflow:scroll, so they can still scroll -->
+<div style="z-index:9999;position:fixed;overflow:scroll;background:rgba( 0, 0, 0, 0.8 );width:100%;height:100%">
     <div width="100%">
         <a href="" ng-click="modal.closeModal()"
            style="text-align:center;text-decoration: none;
-           color:#ffffff; margin-left:6em;top:3.5em;position:relative">Close Image</a>
+           color:#ffffff; margin-left:1em;top:3.5em;position:relative">Close Image</a>
     </div>
-    <!--background needs to be repeated here for large images that scroll off the page -->
-    <div style="background:rgba( 0, 0, 0, 0.8 );">
-        <img style="margin-top:4em;margin-left:5em;"
+    <div>
+        <img style="position:relative;margin-top:4em;margin-left:1em;margin-right:1em;max-width:90%;max-height:90%"
              ng-if="modalImage.imageData"
              src="data:image/jpeg;base64,{{modalImage.imageData}}"
              alt="{{modalImage.altText}}">
@@ -15,5 +15,4 @@
             Loading Image...
         </div>
     </div>
-    <!-- modal is determined by the ControllerAs configuration -->
 </div>
