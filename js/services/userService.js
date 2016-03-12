@@ -68,6 +68,10 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         this.userInfo.previewCache[data.itemLocation] = data.response.data;
     };
 
+    this.setItemData = function( data ) {
+        this.userInfo.itemCache[data.itemLocation] = data.response.data;
+    };
+
     this.handleItemListResolve = function( itemList ) {
         this.userInfo.itemList = itemList;
         for( var itemIndex in this.userInfo.itemList ) {
@@ -86,6 +90,15 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
                 ).then(
                     this.setPreview.bind(this)
                 )
+            } else {
+                this.userInfo.itemCache[item.itemLocation] = "loading";
+                $itemService.getItem(
+                    this.userInfo.access_token,
+                    item.itemLocation,
+                    "base64"
+                ).then(
+                    this.setItemData.bind(this)
+                )
             }
         }
         this.userInfoPromise.resolve(this.userInfo);
@@ -100,6 +113,7 @@ userService.service("$user",["$http", "$q", "$itemService", function($http, $q, 
         if( typeof this.userInfo.itemList === "undefined" ) {
             this.userInfo.itemList = [];
             this.userInfo.previewCache = {};
+            this.userInfo.itemCache = {};
             $itemService.getItemList(userEmail, userId, accessToken).then(
                 this.handleItemListResolve.bind(this),
                 this.handleItemListReject.bind(this)

@@ -35,9 +35,9 @@
                 </div>
             </a>
             <div ng-if="item.type!=='image'">
-                <!-- TODO: add item.name to API, implement a way to download unknown types (href with auth)
-                     TODO: and use that download original from modal! -->
-                No Preview Available
+                <a ng-href="data:application/octect-stream;base64,{{user_info.itemCache[item.itemLocation]}}">No Preview Available</a>
+                <!-- TODO: add item.name to API, implement a way to download unknown types (href with data url)
+                     TODO: re-use that to enable download in modal -->
             </div>
         </div>
     </ol>

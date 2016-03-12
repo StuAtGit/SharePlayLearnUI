@@ -1,10 +1,6 @@
 var shareAppControllers = angular.module('shareAppControllers',["userModule","itemModule","btford.modal"])
-    .config(function($sceProvider) {
-    //completely disable SCE because it sanitizes data that is *not*
-    //user-provided, and is *not* cross domain.
-    //TODO: sort out the necessary whitelists for this - may not be necessary at all in the new model
-    //TODO: as we'll no longer be generating html snippets server side and injecting them in
-    $sceProvider.enabled(false);
+    .config(function($sceProvider,$compileProvider) {
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(data):/);
 });
 
 shareAppControllers.controller("PlayCtrl", ['$scope', '$routeParams',

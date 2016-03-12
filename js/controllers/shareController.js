@@ -48,7 +48,7 @@ shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user
 
 shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routeParams',
     '$location', '$anchorScroll', '$user','$imageModal',
-    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal, webSocket ) {
+    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal ) {
 
         $scope.sendHubCommand = function() {
             console.log("Sending command: " + $scope.hub.command + " to your hub. User: " + $scope.hub.user);
