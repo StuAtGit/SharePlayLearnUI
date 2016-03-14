@@ -6,13 +6,15 @@
            color:#ffffff; margin-left:1em;top:3.5em;position:relative">Close Image</a>
     </div>
     <div>
-        <!-- TODO: the value is stuck on "loading" for tech cat, and just not there for others -->
-        <!--<a ng-href="data:application/octect-stream;base64,{{user_info.itemCache[modalItem.itemLocation]}}">-->
+        <a download="{{ modalItem.itemLocation.substring(
+                                    modalItem.itemLocation.lastIndexOf('/') + 1
+                                 ) }}"
+           ng-href="data:application/octect-stream;base64,{{user_info.itemCache[modalItem.itemLocation]}}">
         <img style="position:relative;margin-top:4em;margin-left:1em;margin-right:1em;max-width:90%;max-height:90%"
              ng-if="modalImage.imageData"
              src="data:image/jpeg;base64,{{modalImage.imageData}}"
              alt="{{modalImage.altText}}">
-        <!--</a>-->
+        </a>
         <div style="color:#ffffff; margin-left:6em;margin-top:4.5em"
              ng-if="!modalImage.imageData">
             Loading Image...
