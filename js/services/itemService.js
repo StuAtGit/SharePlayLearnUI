@@ -46,7 +46,7 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
 
     this.getItemList = function( userEmail, userId, accessToken ) {
         if( typeof this.itemList === "undefined" ) {
-            $http.get(apiLocation + "api/file/" + userEmail + "/" + userId + "/filelist",
+            $http.get(apiLocation + "file_api/file/" + userEmail + "/" + userId + "/filelist",
                 {
                     headers: {'Authorization':'Bearer ' + accessToken}
                 }).
@@ -79,7 +79,7 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
             encoding = "base64";
         }
         var itemDataDeferred = $q.defer();
-        $http.get(apiLocation + "api/file" + itemLocation + "?encode=" + encoding, {
+        $http.get(apiLocation + "file_api/file" + itemLocation + "?encode=" + encoding, {
             headers : {'Authorization' : 'Bearer ' + accessToken}
         }).then(
             function( response ) {
