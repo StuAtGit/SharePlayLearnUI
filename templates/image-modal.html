@@ -35,7 +35,7 @@
         <a download="{{ modalItem.itemLocation.substring(
                                     modalItem.itemLocation.lastIndexOf('/') + 1
                                  ) }}"
-           ng-href="data:application/octect-stream;base64,{{user_info.itemCache[modalItem.itemLocation]}}">
+           ng-href="data:application/octect-stream;base64,{{user_info.itemCache[modalItem.preferredLocation.fullPath]}}">
         <img style="position:relative;margin-top:4em;margin-left:1em;margin-right:1em;max-width:90%;max-height:90%"
              ng-if="modalImage.imageData"
              src="data:image/jpeg;base64,{{modalImage.imageData}}"
