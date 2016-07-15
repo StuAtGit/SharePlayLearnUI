@@ -51,7 +51,7 @@
         <div ng-repeat="item in user_info.itemList" class="itemlist">
             <a href="" ng-click="openImageModal(item)" ng-if="item.type==='image'">
                 <img
-                     src="data:image/jpeg;base64,{{user_info.previewCache[item.previewLocation]}}"
+                     src="data:image/jpeg;base64,{{user_info.previewCache[item.previewLocation.fullPath]}}"
                      ng-if="item.previewLocation"
                      alt="{{item.attr.altText}}"
                 >

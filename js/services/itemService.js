@@ -46,6 +46,7 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
 
     this.getItemList = function( userEmail, userId, accessToken ) {
         if( typeof this.itemList === "undefined" ) {
+            console.log("Starting load of filelist");
             $http.get(apiLocation + "file_api/file/" + userEmail + "/" + userId + "/filelist",
                 {
                     headers: {'Authorization':'Bearer ' + accessToken}
@@ -60,9 +61,7 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
         }
         return this.itemListDeferred.promise;
     };
-
-    //TODO: finish off modal dialog, update tomcat web.xml with CORS options on Digital Ocean,
-    //TODO: and deploy to nginx and tomcat. Might be time for salt :O.
+    
     //TODO: Write unit/functional tests for services that
     //TODO: validate they do the right thing (once we're sure we know what that is..
 

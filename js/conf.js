@@ -21,4 +21,5 @@
  * containing parts covered by the terms of EPL,
  * the licensors of this Program grant you additional permission to convey the resulting work.
  */
-var apiLocation = "http://127.0.0.1:8080/";
+//var apiLocation = "http://127.0.0.1:8080/";
+var apiLocation = "/";

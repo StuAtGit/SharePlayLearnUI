@@ -80,10 +80,6 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
                 $scope.user_info.access_token = $routeParams["access_token"];
                 $scope.user_info.token_expiration = $routeParams["expires_in"];
                 $scope.user_info.id_token = $routeParams["id_token"];
-                window.sessionStorage.setItem("access_token", $scope.user_info.access_token);
-                //might want to calculate expiration as soon as it gets back, so I can have it anchored to a time?
-                //will need to be UTC, etc.
-                window.sessionStorage.setItem("expires_in", $scope.user_info.token_expiration);
                 /**
                  * Parse jwt in id_token to get user info
                  * Pulled in jwsjs library so I could do this...
@@ -108,6 +104,10 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
                 $scope.user_info.user_name = payload.email.split('@')[0];
                 $scope.user_info.user_id = payload.sub;
 
+                window.sessionStorage.setItem("access_token", $scope.user_info.access_token);
+                //might want to calculate expiration as soon as it gets back, so I can have it anchored to a time?
+                //will need to be UTC, etc.
+                window.sessionStorage.setItem("expires_in", $scope.user_info.token_expiration);
                 //window.sessionStorage.setItem("id_token", $scope.user_info.id_token);
                 //window.sessionStorage.setItem("id_token_header", header);
                 //window.sessionStorage.setItem("id_token_payload", payload);
@@ -116,6 +116,7 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
                 window.sessionStorage.setItem("user_name",$scope.user_info.user_name)
                 //window.sessionStorage.setItem("id_token_signature", signature);
 
+                console.log("user login started.");
                 $user.getCurrentUser().then(
                     function success( data ) {
                         $scope.user_info = data;
