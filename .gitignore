@@ -1,3 +1,5 @@
 bower_components
 .idea
 build_dir
+org.eclipse.paho.mqtt.javascript
+build_dir.zip
