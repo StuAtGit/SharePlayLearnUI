@@ -78,7 +78,7 @@ var $itemService = itemModule.service( "$itemService", ["$http", "$q", function(
             encoding = "base64";
         }
         var itemDataDeferred = $q.defer();
-        $http.get(apiLocation + "file_api/file" + itemLocation + "?encode=" + encoding, {
+        $http.get(apiLocation + "file_api/file" + itemLocation + "?encoding=" + encoding, {
             headers : {'Authorization' : 'Bearer ' + accessToken}
         }).then(
             function( response ) {
