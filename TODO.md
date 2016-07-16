@@ -1,9 +1,12 @@
 #TODO list
 
 ##Current top priority
-- Port to new API
-- Auth seems OK
-- File API
+- Async file upload (no more 201 page for the user)
+- Public URLs ( these can be original! )
+- Share with other users
+- Redis
+- Figure out secure path to download original (Probably just need an app)
+- Token pinging in UI (smoother token expiration?)
 - Grunt task to zip up directories, ready for delivery to server
    - currently just: 
         - hand copy stuff into build_dir
