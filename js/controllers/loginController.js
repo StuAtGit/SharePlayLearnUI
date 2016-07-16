@@ -33,20 +33,6 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
     function( $scope, $http, $routeParams, $user ) {
         $scope.credentials = {};
 
-        if( $user.getCurrentUser() !== undefined ) {
-            $user.getCurrentUser().then(
-                function success( data ) {
-                    $scope.user_info = data;
-                    setCurrentUser($scope.user_info.user_name, document);
-                },
-                function error( msg ) {
-                    logout($scope,document);
-                }
-            );
-        } else {
-            logout($scope,document);
-        }
-
         $scope.submitLogin = function(credentials) {
             console.log("Submitting login with: " + JSON.stringify(credentials));
             var loginPromise = $user.loginUser(credentials);
@@ -127,6 +113,20 @@ shareAppControllers.controller("LoginCtrl",["$scope", "$http", "$routeParams", "
                         logout($scope,document);
                     }
                 );
+            }
+        } else {
+            if( $user.getCurrentUser() !== undefined ) {
+                $user.getCurrentUser().then(
+                    function success( data ) {
+                        $scope.user_info = data;
+                        setCurrentUser($scope.user_info.user_name, document);
+                    },
+                    function error( msg ) {
+                        logout($scope,document);
+                    }
+                );
+            } else {
+                logout($scope,document);
             }
         }
     }
