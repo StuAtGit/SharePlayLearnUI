@@ -3,6 +3,7 @@
 ##Current top priority
 - Async file upload (no more 201 page for the user)
 - Public URLs ( these can be original! )
+- Can I make user@password + Basic Auth work for full-sized image links? Logout should still be possible by emptying cache.
 - Share with other users
 - Redis
 - Figure out secure path to download original (Probably just need an app)
