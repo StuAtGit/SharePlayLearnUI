@@ -22,7 +22,7 @@
  * the licensors of this Program grant you additional permission to convey the resulting work.
  */
 
-var shareAppControllers = angular.module('shareAppControllers',["userModule","itemModule","btford.modal"])
+var shareAppControllers = angular.module('shareAppControllers',["userModule","itemModule","btford.modal","angularFileUpload"])
     .config(function($sceProvider,$compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(data):/);
 });

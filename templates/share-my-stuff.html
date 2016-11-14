@@ -73,27 +73,13 @@
     <br/>
     <hr width="100%" size="0.3em"/>
     Upload new stuff:
-    <!-- Upload File Form - needs much improvement -->
-    <form action="file_api/file/form" method="post" enctype="multipart/form-data"
-          ng-submit="submitUpload(file_upload,user_info)" novalidate>
-        <!--<label for="upload_filename">Save file as:</label>-->
-        <!--<input id="upload_filename" type="text" name="filename"
-        ng-model="file_upload.filename"/> <br/>-->
-        <label for="upload_file_select">Select File:</label>
-        <input id="upload_file_select" type="file" name="file"
-               ng-model="file_upload.file" class="upload-file-select"/><br/>
-        <label for="file_submit">Save File:</label>
-        <input type="submit" value="Upload" id="file_submit" class="submit-button"/> <br/>
-        <input type="hidden" name="user_id" value="{{user_info.user_id}}"
-               ng-model="user_info.user_id"/>
-        <!-- TODO: figure out email/name mismatch between UI and API -->
-        <input type="hidden" name="user_name" value="{{user_info.user_email}}"
-               ng-model="user_info.user_email"/>
-        <input type="hidden" name="access_token" value="{{user_info.access_token}}"
-               ng-model="user_info.user_id"/>
-    </form>
-    <div id="file-uploaded" style="display:none;">File Uploaded :)</div>
-
+    <input type="file" nv-file-select uploader="uploader"/><br/>
+    <ul>
+        <li ng-repeat="item in uploader.queue">
+            Name: <span ng-bind="item.file.name"></span><br/>
+            <button ng-click="item.upload()">upload</button>
+        </li>
+    </ul>
 </div>
 <div class="app-content" ng-show="(!user_info || !user_info.user_name) && !loggingIn">
     Please login in to share

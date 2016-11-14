@@ -2,6 +2,10 @@
 
 ##Current top priority
 - Async file upload (no more 201 page for the user)
+    - started with angular-file-upload
+    - filled out skeleton from: https://github.com/nervgh/angular-file-upload/wiki/Introduction
+    - now I need to test & fix it & get it working with File API
+    - OR!!... maybe I should be using HTML5 at this point? http://jsfiddle.net/f8Hee/1/ ?
 - Public URLs ( these can be original! )
 - Can I make user@password + Basic Auth work for full-sized image links? Logout should still be possible by emptying cache.
 - Share with other users

@@ -73,8 +73,10 @@ shareAppControllers.controller("ImageModalCtrl", ["$scope", "$imageModal","$user
 }]);
 
 shareAppControllers.controller("ShareMyStuffCtrl", ['$scope', '$http','$routeParams',
-    '$location', '$anchorScroll', '$user','$imageModal',
-    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal ) {
+    '$location', '$anchorScroll', '$user','$imageModal', 'FileUploader',
+    function( $scope, $http, $routeParams, $location, $anchorScroll, $user, $imageModal, FileUploader ) {
+        $scope.uploader = new FileUploader();
+        //TODO: maybe I should be using HTML5 at this point? http://jsfiddle.net/f8Hee/1/ ?
 
         $scope.sendHubCommand = function() {
             console.log("Sending command: " + $scope.hub.command + " to your hub. User: " + $scope.hub.user);
